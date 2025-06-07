@@ -8,6 +8,7 @@ class DraggablePuzzlePiece extends StatelessWidget {
   final VoidCallback onDragStarted;
   final Function(PuzzlePiece) onDragEnded;
   final bool isTarget;
+  final bool isDraggable;
 
   const DraggablePuzzlePiece({
     super.key,
@@ -15,18 +16,12 @@ class DraggablePuzzlePiece extends StatelessWidget {
     required this.onDragStarted,
     required this.onDragEnded,
     this.isTarget = false,
+    this.isDraggable = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Draggable<PuzzlePiece>(
-      data: piece,
-      feedback: _buildPiece(context, isDragging: true),
-      childWhenDragging: _buildPiece(context, isDragging: true),
-      onDragStarted: () => onDragStarted(),
-      onDragEnd: (_) => onDragEnded(piece),
-      child: _buildPiece(context),
-    );
+    return _buildPiece(context);
   }
 
   Widget _buildPiece(BuildContext context, {bool isDragging = false}) {
@@ -58,24 +53,19 @@ class DraggablePuzzlePiece extends StatelessWidget {
               ]
             : null,
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SvgPicture.asset(
+      child: ClipRect(
+        child: Transform.translate(
+          offset: Offset(
+            piece.pieceType == GameConstants.leftPiece ? 0 : -GameConstants.pieceSize,
+            0,
+          ),
+          child: SvgPicture.asset(
             piece.imagePath,
-            width: GameConstants.pieceSize * 0.6,
-            height: GameConstants.pieceSize * 0.6,
-            fit: BoxFit.contain,
+            width: GameConstants.pieceSize * 2,
+            height: GameConstants.pieceSize,
+            fit: BoxFit.cover,
           ),
-          const SizedBox(height: 8),
-          Text(
-            piece.gujaratiWord,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

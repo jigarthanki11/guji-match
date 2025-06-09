@@ -7,10 +7,14 @@ class DragDropController extends ChangeNotifier {
   PuzzlePiece? _draggedPiece;
   int _score = 0;
   final Map<String, Offset> _initialPositions = {};
+  bool _puzzleCompleted = false;
+  String? _completedWord;
 
   List<PuzzlePiece> get pieces => _pieces;
   PuzzlePiece? get draggedPiece => _draggedPiece;
   int get score => _score;
+  bool get puzzleCompleted => _puzzleCompleted;
+  String? get completedWord => _completedWord;
 
   DragDropController() {
     _initializePieces();
@@ -93,6 +97,13 @@ class DragDropController extends ChangeNotifier {
     }
 
     stopDragging();
+
+    if (_pieces.where((p) => !p.isMatched).isEmpty) {
+      _puzzleCompleted = true;
+      _completedWord = _pieces.first.id;
+      notifyListeners();
+    }
+
     return isMatch;
   }
 
@@ -109,7 +120,15 @@ class DragDropController extends ChangeNotifier {
   void placePieceOnCanvas(String id, String pieceType) {
     final index = _pieces.indexWhere((p) => p.id == id && p.pieceType == pieceType);
     if (index != -1) {
-      _pieces[index] = _pieces[index].copyWith(isOnCanvas: true);
+      _pieces[index] = _pieces[index].copyWith(isOnCanvas: true, isMatched: true);
+      print('Piece placed and matched: id=[32m$id[0m, type=$pieceType');
+      notifyListeners();
+    }
+    // Check if all pieces are matched
+    if (_pieces.isNotEmpty && _pieces.every((p) => p.isMatched)) {
+      _puzzleCompleted = true;
+      _completedWord = _pieces.first.id;
+      print('PUZZLE COMPLETED! completedWord=[32m$_completedWord[0m');
       notifyListeners();
     }
   }
@@ -119,6 +138,8 @@ class DragDropController extends ChangeNotifier {
     _score = 0;
     _draggedPiece = null;
     _pieces = _pieces.map((p) => p.copyWith(isOnCanvas: false, isMatched: false, isDragging: false)).toList();
+    _puzzleCompleted = false;
+    _completedWord = null;
     notifyListeners();
   }
 } 

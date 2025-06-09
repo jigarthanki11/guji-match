@@ -4,7 +4,12 @@ import 'features/game/controllers/drag_drop_controller.dart';
 import 'features/game/screens/game_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => DragDropController(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -12,18 +17,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => DragDropController(),
-      child: MaterialApp(
-        title: 'Little Learners: Gujarati Match',
-        theme: ThemeData(
-          primarySwatch: Colors.deepPurple,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          fontFamily: 'Roboto',
-        ),
-        home: const GameScreen(),
-        debugShowCheckedModeBanner: false,
+    return MaterialApp(
+      title: 'Little Learners: Gujarati Match',
+      theme: ThemeData(
+        primarySwatch: Colors.deepPurple,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        fontFamily: 'Roboto',
       ),
+      home: const GameScreen(),
+      debugShowCheckedModeBanner: false,
     );
   }
 } 

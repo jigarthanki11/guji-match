@@ -43,7 +43,7 @@ class DragDropController extends ChangeNotifier {
 
   void startDragging(PuzzlePiece piece) {
     _draggedPiece = piece;
-    _updatePieceState(piece.id, isDragging: true);
+    _updatePieceState(piece.id, piece.pieceType, isDragging: true);
     notifyListeners();
   }
 
@@ -57,7 +57,7 @@ class DragDropController extends ChangeNotifier {
 
   void stopDragging() {
     if (_draggedPiece != null) {
-      _updatePieceState(_draggedPiece!.id, isDragging: false);
+      _updatePieceState(_draggedPiece!.id, _draggedPiece!.pieceType, isDragging: false);
       _draggedPiece = null;
       notifyListeners();
     }
@@ -70,8 +70,8 @@ class DragDropController extends ChangeNotifier {
     
     if (isMatch) {
       _score += 10;
-      _updatePieceState(_draggedPiece!.id, isMatched: true);
-      _updatePieceState(targetPiece.id, isMatched: true);
+      _updatePieceState(_draggedPiece!.id, _draggedPiece!.pieceType, isMatched: true);
+      _updatePieceState(targetPiece.id, targetPiece.pieceType, isMatched: true);
       
       // Snap pieces together
       final centerX = (targetPiece.position.dx + _draggedPiece!.position.dx) / 2;
@@ -107,8 +107,8 @@ class DragDropController extends ChangeNotifier {
     return isMatch;
   }
 
-  void _updatePieceState(String id, {bool? isDragging, bool? isMatched}) {
-    final index = _pieces.indexWhere((piece) => piece.id == id);
+  void _updatePieceState(String id, String pieceType, {bool? isDragging, bool? isMatched}) {
+    final index = _pieces.indexWhere((piece) => piece.id == id && piece.pieceType == pieceType);
     if (index != -1) {
       _pieces[index] = _pieces[index].copyWith(
         isDragging: isDragging,

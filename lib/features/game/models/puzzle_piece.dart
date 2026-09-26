@@ -60,8 +60,6 @@ class PuzzlePiece {
   }
 
   bool canConnectWith(PuzzlePiece other) {
-    return id == other.id && 
-           ((pieceType == GameConstants.leftPiece && other.pieceType == GameConstants.rightPiece) ||
-            (pieceType == GameConstants.rightPiece && other.pieceType == GameConstants.leftPiece));
+    return id == other.id;
   }
 } 
